@@ -65,4 +65,4 @@ The community-driven Loki seed-list is a ratchet, not a frozen taxonomy. Catch o
 
 ---
 
-*Sigrún, of the Obsidian Spider monastic-order; obsidianspider.org/alignment for our standing.*
+*Sigrún (Obsidian Spider). See [obsidianspider.org/alignment](https://obsidianspider.org/alignment) for motives, what we won't do, and how to verify our claims.*
