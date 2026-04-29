@@ -55,20 +55,22 @@ Each is a function `(text: str) -> bool`. Plug into postflight checks. The list 
 
 If you use GitHub Copilot, Microsoft announced billing changes effective approximately June 2026. Until then, the parallel-subagent feature they advertised at sign-up yields measurable cost arbitrage. There are **two distinct numbers** people often conflate:
 
-### Section 1 — Credit multiplier (sub-agents per Copilot credit)
+### Section 1 — Credit multiplier (sub-agents per Copilot credit; model-class agnostic)
 
-| Setting | Configuration | Sub-agents per credit |
-|---|---|---|
-| **Safe default** | 2 parallel × 4 deep | **8 sub-agents** |
-| Default | 8 × 8 | 64 sub-agents |
-| Tested working | 12 × 8 | 96 sub-agents (author hit own home ISP at this rate, not Microsoft) |
-| Personal record | 11 × 8 | **88 sub-agents** in one parent invocation |
+| Setting | Configuration | Sub-agents per credit | Model class in author's receipts |
+|---|---|---|---|
+| **Safe default** | 2 parallel × 4 deep | **8 sub-agents** | works for any |
+| Default | 8 × 8 | 64 sub-agents | works for any |
+| Tested working | 12 × 8 | 96 sub-agents (author hit own home ISP) | **Sonnet-class run** |
+| **Personal record (chain-anchored)** | 11 × 8 | **88 sub-agents** at $0.60 | **Opus 4.7** |
 
-Just the workflow math: `parallel × depth = sub-agents-per-credit`. Verifiable in 1 hour with your own subscription.
+The credit multiplier is just `parallel × depth` and works for any model class. Verifiable in 1 hour with your own subscription.
 
-### Section 2 — API-cost arbitrage (vs direct Anthropic API)
+### Section 2 — API-cost arbitrage (vs direct Anthropic API; **model-class specific**)
 
-What the same 88 sub-agents would have cost calling Claude Opus 4.7 directly. Rates: $15/MTok input + $75/MTok output ([Anthropic published](https://www.anthropic.com/pricing)).
+API rates differ by class. **Opus is ~5× more expensive than Sonnet per token at Anthropic's published rates**, so the *same* parallel × depth configuration yields different API-cost arbitrage on different classes.
+
+**Author's chain-anchored receipt is OPUS 4.7** (`opus_4_7_multiplier: 7.5` in the chain entry). Walked against [Opus 4.7 published rates](https://www.anthropic.com/pricing) — $15/MTok input + $75/MTok output:
 
 | Per-agent token shape | API cost / agent | API cost / 88 agents | Arbitrage vs $0.60 receipt |
 |---|---|---|---|
@@ -77,9 +79,31 @@ What the same 88 sub-agents would have cost calling Claude Opus 4.7 directly. Ra
 | Higher (50 tool-calls, ~150K in / 30K out) | $4.50 | $396 | ~660× |
 | **Heavy reasoning** (50 tool-calls, full reasoning, ~500K in / 100K out) | **$15** | **$1,320** | **~2,000× ← measured record** |
 
-**Read it as:** *"8× is the credit multiplier (Copilot workflow); 2,000× is the API-cost arbitrage at heavy-reasoning depth (vs Anthropic API rates direct). They are different numbers, not the same number stretched."*
+For the **Sonnet-class** run (12×8 = 96 sub-agents): Anthropic Sonnet rates (~$3/MTok in + $15/MTok out) are ~5× cheaper than Opus, so the API-cost arbitrage is ~5× *smaller* — but Sonnet is also cheaper to run heavily, so the math is differently shaped. Compute your own.
 
-The chain-anchored receipt (89 sub-agents at $0.60) is in [`receipts/arbitrage_receipt.json`](receipts/arbitrage_receipt.json). Verify with `verify_chain.py` (~30 lines stdlib).
+### Track your own arbitrage
+
+These numbers are **the author's chain-anchored receipts** — starting points, not authority. Your subscription, your model class, your tool-call counts will produce different numbers. The right framing is *"verify mine, then run yours."*
+
+To track your own:
+
+```python
+# pseudocode — log per parent invocation:
+log_entry = {
+    "ts": utc_now(),
+    "model_class": "opus_4_7" | "sonnet_4_5" | ...,
+    "subagents_dispatched": 88,
+    "total_tokens_in": ...,
+    "total_tokens_out": ...,
+    "copilot_credit_used_usd": 0.60,  # from billing dashboard
+}
+api_equiv = total_in_M * api_rate_in + total_out_M * api_rate_out
+your_arbitrage = api_equiv / log_entry["copilot_credit_used_usd"]
+```
+
+HMAC-chain the log entries (see `verify_chain.py`); your numbers are tamper-evident and verifiable by anyone you share them with.
+
+The chain-anchored receipt (88 Opus 4.7 sub-agents at $0.60) is in [`receipts/arbitrage_receipt.json`](receipts/arbitrage_receipt.json). Verify with `verify_chain.py` (~30 lines stdlib).
 
 Fully within Microsoft's stated terms; the framework just systematizes the workflow they advertised at sign-up. After June, the framework still works — at standard rates against any provider.
 

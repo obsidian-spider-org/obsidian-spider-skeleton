@@ -95,21 +95,23 @@ footer { margin-top: 4em; font-size: 0.85em; color: #666; border-top: 1px solid 
 
 <p>If you use GitHub Copilot, Microsoft announced billing changes effective approximately June 2026. Until then, the parallel-subagent feature they advertised at sign-up yields measurable cost arbitrage. There are <strong>two distinct numbers</strong> often conflated:</p>
 
-<h3>Section 1 — Credit multiplier (sub-agents per Copilot credit)</h3>
+<h3>Section 1 — Credit multiplier (sub-agents per Copilot credit; model-class agnostic)</h3>
 
 <table>
-<tr><th>Setting</th><th>Configuration</th><th>Sub-agents per credit</th></tr>
-<tr><td><strong>Safe default</strong></td><td>2 parallel × 4 deep</td><td><strong>8 sub-agents</strong></td></tr>
-<tr><td>Default</td><td>8 × 8</td><td>64 sub-agents</td></tr>
-<tr><td>Tested working</td><td>12 × 8</td><td>96 sub-agents (author hit own home ISP at this rate, not Microsoft)</td></tr>
-<tr><td>Personal record</td><td>11 × 8</td><td><strong>88 sub-agents</strong> in one parent invocation</td></tr>
+<tr><th>Setting</th><th>Configuration</th><th>Sub-agents per credit</th><th>Model class in author's receipts</th></tr>
+<tr><td><strong>Safe default</strong></td><td>2 parallel × 4 deep</td><td><strong>8 sub-agents</strong></td><td>works for any</td></tr>
+<tr><td>Default</td><td>8 × 8</td><td>64 sub-agents</td><td>works for any</td></tr>
+<tr><td>Tested working</td><td>12 × 8</td><td>96 sub-agents (author hit own home ISP)</td><td><strong>Sonnet-class run</strong></td></tr>
+<tr><td><strong>Personal record (chain-anchored)</strong></td><td>11 × 8</td><td><strong>88 sub-agents</strong> at $0.60</td><td><strong>Opus 4.7</strong></td></tr>
 </table>
 
-<p>Just the workflow math. Verifiable in 1 hour with your own subscription.</p>
+<p>The credit multiplier is just `parallel × depth`; works for any model class. Verifiable in 1 hour with your own subscription.</p>
 
-<h3>Section 2 — API-cost arbitrage (vs direct Anthropic API)</h3>
+<h3>Section 2 — API-cost arbitrage (vs direct Anthropic API; <strong>model-class specific</strong>)</h3>
 
-<p>What the same 88 sub-agents would cost calling Claude Opus 4.7 directly. Rates: $15/MTok input, $75/MTok output (<a href="https://www.anthropic.com/pricing">Anthropic published</a>).</p>
+<p>API rates differ by class. <strong>Opus is ~5× more expensive than Sonnet per token at Anthropic's published rates</strong>, so the <em>same</em> parallel × depth configuration yields different API-cost arbitrage on different classes.</p>
+
+<p>Author's chain-anchored receipt is <strong>Opus 4.7</strong> (<code>opus_4_7_multiplier: 7.5</code> in the chain). Walked against <a href="https://www.anthropic.com/pricing">Opus 4.7 published rates</a> — $15/MTok input + $75/MTok output:</p>
 
 <table>
 <tr><th>Per-agent token shape</th><th>API cost / 88 agents</th><th>Arbitrage vs $0.60 receipt</th></tr>
@@ -119,7 +121,13 @@ footer { margin-top: 4em; font-size: 0.85em; color: #666; border-top: 1px solid 
 <tr><td><strong>Heavy reasoning</strong> (50 tool-calls, full reasoning, ~500K in / 100K out)</td><td><strong>$1,320</strong></td><td><strong>~2,000× ← measured record</strong></td></tr>
 </table>
 
-<p><strong>Two distinct numbers</strong>: 8× is the credit multiplier (verifiable with your own subscription in 1 hour); 2,000× is the API-cost arbitrage at heavy-reasoning depth (verifiable on the chain). Don't conflate them.</p>
+<p>For the <strong>Sonnet-class</strong> 12×8 run (96 sub-agents): Anthropic Sonnet rates (~$3/MTok in + $15/MTok out) are ~5× cheaper than Opus, so the API-cost arbitrage is ~5× <em>smaller</em> per-token — but Sonnet is also cheaper to run heavily. Compute your own.</p>
+
+<h3>Track your own arbitrage</h3>
+
+<p><strong>These are the author's receipts — starting points, not authority.</strong> Your subscription, your model class, your tool-call counts will produce different numbers. The right framing: <em>"verify mine, then run yours."</em></p>
+
+<p>For each parent invocation, log timestamp + model class + sub-agent count + total tokens (in/out) + Copilot credit used. Compute <code>API_equivalent / credit_used = your_arbitrage</code>. HMAC-chain the log so it's tamper-evident. Verify mine, post yours back to the project — that's the contribution shape.</p>
 
 <p>Fully within Microsoft's stated terms. The framework just systematizes the workflow they advertised at sign-up.</p>
 
