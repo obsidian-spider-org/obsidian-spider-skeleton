@@ -57,14 +57,16 @@ If you use GitHub Copilot, Microsoft announced billing changes effective approxi
 
 ### Section 1 — Credit multiplier (sub-agents per Copilot credit; model-class agnostic)
 
-| Setting | Configuration | Sub-agents per credit | Model class in author's receipts |
-|---|---|---|---|
-| **Safe default** | 2 parallel × 4 deep | **8 sub-agents** | works for any |
-| Default | 8 × 8 | 64 sub-agents | works for any |
-| Tested working | 12 × 8 | 96 sub-agents (author hit own home ISP) | **Sonnet-class run** |
-| **Personal record (chain-anchored)** | 11 × 8 | **88 sub-agents** at $0.60 | **Opus 4.7** |
+> **The workflow doesn't break. Rate limits do.** This pattern is heavily rate-limited at the provider edge — your subscription tier dictates how high you can run. Tune `parallel × depth` to whatever your tier supports; the framework is the same shape.
 
-The credit multiplier is just `parallel × depth` and works for any model class. Verifiable in 1 hour with your own subscription.
+| Setting | Configuration | Sub-agents per credit | Author's tested-stable status (April 2026) |
+|---|---|---|---|
+| **Safe default** | 2 parallel × 4 deep | **8 sub-agents** | recommended start; minimal rate-limit pressure |
+| **High-throughput working** | **8 × 8** | **64 sub-agents** | **author's daily working config; holds stable in testing** |
+| Max tested — Sonnet class | 12 × 8 | 96 sub-agents | sustained ~6 hours with periodic rate-limit pauses |
+| **Max tested — Opus 4.7 (chain-anchored)** | **11 × 8** | **88 sub-agents** at $0.60 | **single-shot record; burns the entire weekly quota in one run** — author does not run this often |
+
+The credit multiplier is just `parallel × depth` and works for any model class. **Most production workflows should be 8×8** — that's the configuration the author runs daily. 11×8 Opus is the chain-anchored receipt, not the daily setting. Verifiable in 1 hour with your own subscription at 2×4.
 
 ### Section 2 — API-cost arbitrage (vs direct Anthropic API; **model-class specific**)
 

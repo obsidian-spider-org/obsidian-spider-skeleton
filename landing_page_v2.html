@@ -97,15 +97,17 @@ footer { margin-top: 4em; font-size: 0.85em; color: #666; border-top: 1px solid 
 
 <h3>Section 1 — Credit multiplier (sub-agents per Copilot credit; model-class agnostic)</h3>
 
+<p style="background:#f0f4f8;padding:0.8em;border-left:3px solid #888;border-radius:3px;"><strong>The workflow doesn't break. Rate limits do.</strong> This pattern is heavily rate-limited at the provider edge — your subscription tier dictates how high you can run. Tune <code>parallel × depth</code> to whatever your tier supports; the framework is the same shape.</p>
+
 <table>
-<tr><th>Setting</th><th>Configuration</th><th>Sub-agents per credit</th><th>Model class in author's receipts</th></tr>
-<tr><td><strong>Safe default</strong></td><td>2 parallel × 4 deep</td><td><strong>8 sub-agents</strong></td><td>works for any</td></tr>
-<tr><td>Default</td><td>8 × 8</td><td>64 sub-agents</td><td>works for any</td></tr>
-<tr><td>Tested working</td><td>12 × 8</td><td>96 sub-agents (author hit own home ISP)</td><td><strong>Sonnet-class run</strong></td></tr>
-<tr><td><strong>Personal record (chain-anchored)</strong></td><td>11 × 8</td><td><strong>88 sub-agents</strong> at $0.60</td><td><strong>Opus 4.7</strong></td></tr>
+<tr><th>Setting</th><th>Configuration</th><th>Sub-agents per credit</th><th>Author's tested-stable status (April 2026)</th></tr>
+<tr><td><strong>Safe default</strong></td><td>2 parallel × 4 deep</td><td><strong>8 sub-agents</strong></td><td>recommended start; minimal rate-limit pressure</td></tr>
+<tr><td><strong>High-throughput working</strong></td><td><strong>8 × 8</strong></td><td><strong>64 sub-agents</strong></td><td><strong>author's daily working config; holds stable</strong></td></tr>
+<tr><td>Max tested — Sonnet class</td><td>12 × 8</td><td>96 sub-agents</td><td>sustained ~6 hours with periodic rate-limit pauses</td></tr>
+<tr><td><strong>Max tested — Opus 4.7 (chain-anchored)</strong></td><td><strong>11 × 8</strong></td><td><strong>88 sub-agents</strong> at $0.60</td><td><strong>single-shot record; burns weekly quota in one run</strong> — author doesn't run this often</td></tr>
 </table>
 
-<p>The credit multiplier is just `parallel × depth`; works for any model class. Verifiable in 1 hour with your own subscription.</p>
+<p>The credit multiplier is just <code>parallel × depth</code>; works for any model class. <strong>Most production workflows should be 8×8</strong> — that's the configuration the author runs daily. 11×8 Opus is the chain-anchored receipt, not the daily setting. Verifiable in 1 hour with your own subscription at 2×4.</p>
 
 <h3>Section 2 — API-cost arbitrage (vs direct Anthropic API; <strong>model-class specific</strong>)</h3>
 
