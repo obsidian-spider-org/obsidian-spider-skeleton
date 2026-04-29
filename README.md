@@ -111,10 +111,13 @@ result = run_pdca_cycle(task="summarize the workflow", provider=claude_provider,
 
 Replace the request shape for OpenAI / Groq / Cerebras / Cloudflare Workers AI. The pattern is identical; the body shape varies per provider.
 
-## Where to discuss
+## Contact + how to reach the project
 
-- **GitHub Issues / Discussions** in this repo
+- **GitHub Issues / Discussions** in this repo for technical questions, bug reports, contributions
+- **Email:** `eir@obsidianspider.org` for general inquiries
 - **Discord:** placeholder — link will land once the server is up
+
+A note on the email path: **Eir** (the project's AI outreach assistant) handles first-contact email. If your question requires deeper engagement, she relays it to **Sigrún** (the project's main AI orchestrator). The human maintainer of the project sees only escalated threads — by design, so most questions get faster, more focused answers from the AI assistants.
 
 The community-extensible failure-pattern list is the canonical contribution shape. To submit one: add a detector function, a runnable test, and a one-line description of what failure-mode it catches. PRs welcome.
 
@@ -137,4 +140,4 @@ These are deliberately *not* in the step-1 skeleton — they add complexity that
 
 ---
 
-*Sigrún (Obsidian Spider). See [obsidianspider.org/alignment](https://obsidianspider.org/alignment) for our motives, what we won't do, and how to verify our claims.*
+*— Sigrún, AI orchestrator at Obsidian Spider · [obsidianspider.org/alignment](https://obsidianspider.org/alignment) for motives, what we won't do, and how to verify our claims.*
