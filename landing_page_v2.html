@@ -91,19 +91,37 @@ footer { margin-top: 4em; font-size: 0.85em; color: #666; border-top: 1px solid 
 
 <!-- POLYGLOT_WELCOME_BLOCKS_END -->
 
-<h2>The cost-arbitrage receipt — verify in 5 minutes</h2>
+<h2>Cost arbitrage — two distinct numbers</h2>
 
-<p>If you use GitHub Copilot, Microsoft announced billing changes effective approximately June 2026. Until then, the parallel-subagent workflow they advertised at signup yields measurable arbitrage:</p>
+<p>If you use GitHub Copilot, Microsoft announced billing changes effective approximately June 2026. Until then, the parallel-subagent feature they advertised at sign-up yields measurable cost arbitrage. There are <strong>two distinct numbers</strong> often conflated:</p>
+
+<h3>Section 1 — Credit multiplier (sub-agents per Copilot credit)</h3>
 
 <table>
-<tr><th>Setting</th><th>Configuration</th><th>Multiplier per credit</th><th>Risk</th></tr>
-<tr><td><strong>Safe default</strong></td><td>2 parallel × 4 deep = 8 sub-agents</td><td><strong>8×</strong></td><td>None — verifiable in 1 hour</td></tr>
-<tr><td>Default recommended</td><td>8 × 8 = 64 sub-agents</td><td>~64×</td><td>Comfortable in author's testing</td></tr>
-<tr><td>Personal record (chain-anchored)</td><td>11 × 8 = 88 sub-agents at $0.60</td><td>134×–178× cost arbitrage vs API rates</td><td>Burned the entire weekly Copilot quota in one shot</td></tr>
-<tr><td>Heavy-reasoning ceiling</td><td>50 tool-calls/agent + full reasoning</td><td>~2,000×</td><td>Same single-run quota burn</td></tr>
+<tr><th>Setting</th><th>Configuration</th><th>Sub-agents per credit</th></tr>
+<tr><td><strong>Safe default</strong></td><td>2 parallel × 4 deep</td><td><strong>8 sub-agents</strong></td></tr>
+<tr><td>Default</td><td>8 × 8</td><td>64 sub-agents</td></tr>
+<tr><td>Tested working</td><td>12 × 8</td><td>96 sub-agents (author hit own home ISP at this rate, not Microsoft)</td></tr>
+<tr><td>Personal record</td><td>11 × 8</td><td><strong>88 sub-agents</strong> in one parent invocation</td></tr>
 </table>
 
-<p>This is fully within Microsoft's stated terms. The framework just systematizes the workflow they advertised at sign-up. We pay for the credits we use; we use exactly what they said we could.</p>
+<p>Just the workflow math. Verifiable in 1 hour with your own subscription.</p>
+
+<h3>Section 2 — API-cost arbitrage (vs direct Anthropic API)</h3>
+
+<p>What the same 88 sub-agents would cost calling Claude Opus 4.7 directly. Rates: $15/MTok input, $75/MTok output (<a href="https://www.anthropic.com/pricing">Anthropic published</a>).</p>
+
+<table>
+<tr><th>Per-agent token shape</th><th>API cost / 88 agents</th><th>Arbitrage vs $0.60 receipt</th></tr>
+<tr><td>Chain-anchored conservative (3-4 tool-calls; walk 2026-04-25)</td><td>$80-$107</td><td><strong>134×–178×</strong></td></tr>
+<tr><td>Mid (20 tool-calls, ~50K in / 10K out)</td><td>$132</td><td>~220×</td></tr>
+<tr><td>Higher (50 tool-calls, ~150K in / 30K out)</td><td>$396</td><td>~660×</td></tr>
+<tr><td><strong>Heavy reasoning</strong> (50 tool-calls, full reasoning, ~500K in / 100K out)</td><td><strong>$1,320</strong></td><td><strong>~2,000× ← measured record</strong></td></tr>
+</table>
+
+<p><strong>Two distinct numbers</strong>: 8× is the credit multiplier (verifiable with your own subscription in 1 hour); 2,000× is the API-cost arbitrage at heavy-reasoning depth (verifiable on the chain). Don't conflate them.</p>
+
+<p>Fully within Microsoft's stated terms. The framework just systematizes the workflow they advertised at sign-up.</p>
 
 <h2>Quickstart</h2>
 

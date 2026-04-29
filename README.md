@@ -51,20 +51,37 @@ Every cycle appends one line to `chain.jsonl`. Each line is HMAC-SHA256-chained 
 
 Each is a function `(text: str) -> bool`. Plug into postflight checks. The list is a **starter, not authoritative** — community PRs add new patterns; we evolve it together.
 
-## Cost-arbitrage receipt
+## Cost arbitrage — two distinct numbers
 
-If you use GitHub Copilot, Microsoft announced billing changes effective approximately June 2026. Until then, the parallel-subagent feature they advertised at sign-up yields measurable cost-arbitrage:
+If you use GitHub Copilot, Microsoft announced billing changes effective approximately June 2026. Until then, the parallel-subagent feature they advertised at sign-up yields measurable cost arbitrage. There are **two distinct numbers** people often conflate:
 
-| Setting | Configuration | Multiplier |
+### Section 1 — Credit multiplier (sub-agents per Copilot credit)
+
+| Setting | Configuration | Sub-agents per credit |
 |---|---|---|
-| **Safe default** | 2 parallel × 4 deep = 8 sub-agents | **8×** per credit |
-| Default | 8 × 8 = 64 sub-agents | ~64× |
-| Personal record | 11 × 8 = 88 sub-agents at $0.60 | **134×–178×** vs API rates (chain-anchored) |
-| Heavy reasoning | 50 tool-calls/agent | ~2,000× |
+| **Safe default** | 2 parallel × 4 deep | **8 sub-agents** |
+| Default | 8 × 8 | 64 sub-agents |
+| Tested working | 12 × 8 | 96 sub-agents (author hit own home ISP at this rate, not Microsoft) |
+| Personal record | 11 × 8 | **88 sub-agents** in one parent invocation |
 
-The chain-anchored receipt (89 sub-agents at $0.60, walked at 3-4 tool-calls per agent = $80-107 conservative API cost) is in [`receipts/arbitrage_receipt.json`](receipts/arbitrage_receipt.json). Verify it yourself with stdlib `hmac` in 5 minutes — the verifier ships in this repo.
+Just the workflow math: `parallel × depth = sub-agents-per-credit`. Verifiable in 1 hour with your own subscription.
 
-This is fully within Microsoft's stated terms; the framework just systematizes the workflow they advertised at sign-up. After June, the framework still works — at standard rates against any provider.
+### Section 2 — API-cost arbitrage (vs direct Anthropic API)
+
+What the same 88 sub-agents would have cost calling Claude Opus 4.7 directly. Rates: $15/MTok input + $75/MTok output ([Anthropic published](https://www.anthropic.com/pricing)).
+
+| Per-agent token shape | API cost / agent | API cost / 88 agents | Arbitrage vs $0.60 receipt |
+|---|---|---|---|
+| Chain-anchored conservative (3-4 tool-calls; walk 2026-04-25) | $0.91-$1.21 | $80-$107 | **134×–178×** |
+| Mid (20 tool-calls, ~50K in / 10K out) | $1.50 | $132 | ~220× |
+| Higher (50 tool-calls, ~150K in / 30K out) | $4.50 | $396 | ~660× |
+| **Heavy reasoning** (50 tool-calls, full reasoning, ~500K in / 100K out) | **$15** | **$1,320** | **~2,000× ← measured record** |
+
+**Read it as:** *"8× is the credit multiplier (Copilot workflow); 2,000× is the API-cost arbitrage at heavy-reasoning depth (vs Anthropic API rates direct). They are different numbers, not the same number stretched."*
+
+The chain-anchored receipt (89 sub-agents at $0.60) is in [`receipts/arbitrage_receipt.json`](receipts/arbitrage_receipt.json). Verify with `verify_chain.py` (~30 lines stdlib).
+
+Fully within Microsoft's stated terms; the framework just systematizes the workflow they advertised at sign-up. After June, the framework still works — at standard rates against any provider.
 
 ## Quickstart (5 minutes)
 
