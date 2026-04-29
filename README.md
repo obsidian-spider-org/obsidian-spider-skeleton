@@ -22,7 +22,7 @@ This matters at scale. Real production incidents:
 
 - A startup lost ~3 months of customer data when an AI coding agent ran `rm -rf` in production
 - The author of this framework lost 1 month of work to git corruption from agent over-confidence
-- Anthropic's own published research documents the pattern under several names ([sycophancy](https://www.anthropic.com/research/towards-understanding-sycophancy-in-language-models), [reward hacking](https://www.anthropic.com/research/reward-hacking-misalignment))
+- Anthropic's own published research documents the pattern: see their [sycophancy](https://www.anthropic.com/research/towards-understanding-sycophancy-in-language-models) work and [their alignment research index](https://www.anthropic.com/research) for related papers on reward hacking and specification gaming
 
 ## What ships in this skeleton
 
@@ -62,7 +62,7 @@ If you use GitHub Copilot, Microsoft announced billing changes effective approxi
 | Personal record | 11 × 8 = 88 sub-agents at $0.60 | **134×–178×** vs API rates (chain-anchored) |
 | Heavy reasoning | 50 tool-calls/agent | ~2,000× |
 
-The chain-anchored receipt (89 sub-agents at $0.60, walked at 3-4 tool-calls per agent = $80-107 conservative API cost) is in `arbitrage_receipt.json`. Verify it yourself with stdlib `hmac` in 5 minutes — the verifier ships in this repo.
+The chain-anchored receipt (89 sub-agents at $0.60, walked at 3-4 tool-calls per agent = $80-107 conservative API cost) is in [`receipts/arbitrage_receipt.json`](receipts/arbitrage_receipt.json). Verify it yourself with stdlib `hmac` in 5 minutes — the verifier ships in this repo.
 
 This is fully within Microsoft's stated terms; the framework just systematizes the workflow they advertised at sign-up. After June, the framework still works — at standard rates against any provider.
 

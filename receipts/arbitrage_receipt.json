@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "kind": "research_finding",
+  "id": "obsidian_spider_arbitrage_2026_04_25",
+  "session_date": "2026-04-25",
+  "ts_utc": "2026-04-25T02:30:00Z",
+  "stop_event": "session_rate_limit",
+  "session_cost_usd": 0.60,
+  "user_message_equivalent": 2.0,
+  "waves": 11,
+  "subagent_calls": 89,
+  "subagents_per_wave": 8,
+  "billing_model": {
+    "billed_unit": "user_message",
+    "opus_4_7_multiplier": 7.5,
+    "base_per_request_usd": 0.04,
+    "opus_per_user_msg_usd": 0.30,
+    "subagent_invocation_cost": "free_within_parent_window"
+  },
+  "arbitrage": {
+    "counterfactual_turns_per_subagent_low": 3,
+    "counterfactual_turns_per_subagent_high": 4,
+    "counterfactual_direct_cost_low_usd": 80.10,
+    "counterfactual_direct_cost_high_usd": 106.80,
+    "arbitrage_low_x": 134,
+    "arbitrage_high_x": 178,
+    "note": "These are the chain-anchored conservative numbers (3-4 tool-calls per subagent). Heavier reasoning configurations extrapolate to ~2,000x; one outlier reached ~9,000x but is not the lead claim."
+  },
+  "hmac_chain_anchor": {
+    "key_construction": "hmac_sha256(canonical_json_minus_hash, prev_hash + serialized_payload)",
+    "verifiable_via": "verify_chain.py",
+    "stored_at": "receipts/arbitrage_receipt.json"
+  },
+  "license": "MIT — verify, fork, contest. The math is the receipt."
+}
