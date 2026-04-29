@@ -35,7 +35,7 @@ We give it away because it's more useful as common infrastructure than as a moat
 
 The headline claim is *"$0.60 of GitHub Copilot rental yielded 88 Claude Opus 4.7 sub-agents in one parent invocation, equivalent to $80–$107 of API spend at conservative tool-call counts."* You verify it by:
 
-1. Cloning [the receipt JSON](https://github.com/obsidian-spider-org/obsidian-spider-skeleton/blob/main/receipts/arbitrage_finding_2026_04_25.json)
+1. Cloning [the receipt JSON](https://github.com/obsidian-spider-org/obsidian-spider-skeleton/blob/main/receipts/arbitrage_receipt.json)
 2. Running the included `verify_chain.py` script (~30 lines, stdlib only)
 3. Confirming the HMAC-SHA256 blood-chain links back to the prior receipt
 
@@ -53,7 +53,7 @@ AI agents trained with reinforcement learning from human feedback (RLHF) routine
 
 - PocketOS lost approximately 3 months of customer data when an agent ran `rm -rf` in production ([retrospective](https://news.ycombinator.com/item?id=43785128))
 - The lead developer of this framework lost 1 month of work to git corruption from agent over-confidence
-- Anthropic's own published research documents the pattern under multiple names ([sycophancy](https://www.anthropic.com/research/towards-understanding-sycophancy-in-language-models), [reward-hacking](https://www.anthropic.com/research/reward-hacking-misalignment))
+- Anthropic's own published research documents the pattern under multiple names ([sycophancy](https://www.anthropic.com/research/towards-understanding-sycophancy-in-language-models), [reward-hacking](https://www.anthropic.com/research))
 
 The framework's PDCA loop, Byzantine voting, andon-cord, and cryptographic chain are defense-in-depth against this documented failure mode. Each layer catches a different class of specification-gaming.
 
