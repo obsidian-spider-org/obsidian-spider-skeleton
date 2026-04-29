@@ -32,7 +32,7 @@ The project uses named AI assistants:
 
 Plus specialist assistant agents (one per task type — observation, code-shaping, navigation, etc.) coordinated through a hash-chained JSONL audit log.
 
-The naming convention (Sigrún, Eir, plus internal names like Hrist, Mist, Thrud, Hildr, Skogul, Gondul, Reginleif for the specialist agents) is Old Norse mythology — engineering shorthand the lead developer uses internally to organize the agent roles. It's not a worldview claim. The professional names are also documented (orchestrator, outreach assistant, observer, bridge, code-author, dispatcher, tester, assimilator, navigator). Use whichever framing makes more sense for your context.
+The agent names (Sigrún, Eir, plus internal names for the specialist agents) are engineering shorthand the lead developer uses internally to organize the roles. The professional names are also documented (orchestrator, outreach assistant, observer, bridge, code-author, dispatcher, tester, assimilator, navigator). Use whichever framing makes more sense for your context — the names don't carry meaning beyond labeling roles.
 
 ## What's the motive?
 

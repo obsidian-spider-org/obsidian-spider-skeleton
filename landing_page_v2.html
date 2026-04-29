@@ -5,89 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Obsidian Spider — an open-source AI agent-orchestration framework</title>
 <meta name="description" content="A small open-source framework for running parallel AI sub-agents with audit trail, fault tolerance, and a starter library of failure-pattern detectors. MIT-licensed. No telemetry, no upsell.">
-<style>
-:root {
-  --fg: #1a1a1a;
-  --fg-muted: #555;
-  --fg-subtle: #888;
-  --bg: #fbfbf8;
-  --bg-card: #ffffff;
-  --bg-code: #f3f2ec;
-  --rule: #d8d6cc;
-  --accent: #2d4858;
-  --accent-soft: #e8eef2;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --fg: #e8e6df;
-    --fg-muted: #b0aea4;
-    --fg-subtle: #82807a;
-    --bg: #16181a;
-    --bg-card: #1d2024;
-    --bg-code: #22252a;
-    --rule: #2e3138;
-    --accent: #88b8d8;
-    --accent-soft: #1f2a33;
-  }
-}
-* { box-sizing: border-box; }
-html { font-size: 17px; -webkit-text-size-adjust: 100%; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, "Helvetica Neue", sans-serif;
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 3em 1.25em 5em;
-  line-height: 1.6;
-  color: var(--fg);
-  background: var(--bg);
-  font-feature-settings: "ss01", "ss02", "kern", "liga";
-}
-h1 {
-  font-size: 2.5em;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-  margin: 0 0 0.4em;
-}
-h1 + .lede { font-size: 1.2em; line-height: 1.5; color: var(--fg-muted); margin: 0 0 2em; }
-h2 {
-  font-size: 1.4em;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  margin: 2.5em 0 0.7em;
-  color: var(--fg);
-  padding-bottom: 0.3em;
-  border-bottom: 1px solid var(--rule);
-}
-h3 { font-size: 1.1em; font-weight: 600; margin: 1.8em 0 0.5em; color: var(--fg); }
-p { margin: 0 0 1em; }
-.lang-block { background: var(--bg-card); border-left: 3px solid var(--accent); padding: 0.9em 1.2em; margin: 1em 0; border-radius: 0 4px 4px 0; }
-.lang-block strong { font-weight: 600; }
-.lang-block .gloss { color: var(--fg-subtle); font-size: 0.92em; margin-top: 0.4em; font-style: italic; }
-code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; background: var(--bg-code); padding: 0.1em 0.4em; border-radius: 3px; font-size: 0.88em; }
-pre { background: var(--bg-code); padding: 1em 1.2em; overflow-x: auto; border-radius: 6px; font-size: 0.85em; line-height: 1.5; border: 1px solid var(--rule); }
-pre code { background: transparent; padding: 0; }
-table { border-collapse: collapse; width: 100%; margin: 1.2em 0; font-size: 0.93em; }
-th, td { border: 1px solid var(--rule); padding: 0.55em 0.7em; text-align: left; vertical-align: top; }
-th { background: var(--accent-soft); font-weight: 600; }
-a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
-a:hover { text-decoration-thickness: 2px; }
-.cta { background: var(--accent-soft); border: 1px solid var(--rule); padding: 1.1em 1.3em; border-radius: 6px; margin: 1.5em 0; font-size: 0.97em; }
-hr { border: 0; border-top: 1px solid var(--rule); margin: 3em 0 2em; }
-footer { margin-top: 4em; padding-top: 1.5em; border-top: 1px solid var(--rule); font-size: 0.88em; color: var(--fg-subtle); }
-ul, ol { margin: 0 0 1em; padding-left: 1.5em; }
-li { margin-bottom: 0.3em; }
-strong { font-weight: 600; }
-blockquote { margin: 1em 0; padding: 0.5em 1em; background: var(--bg-card); border-left: 3px solid var(--accent); border-radius: 0 4px 4px 0; font-style: italic; color: var(--fg-muted); }
-</style>
+<link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
+<p style="font-size: 0.95em; color: var(--fg-muted); margin-bottom: 0.5em; letter-spacing: 0.02em;">A free, open-source AI agent-orchestration framework — verifiable, fault-tolerant, MIT-licensed.</p>
+
 <h1>Obsidian Spider</h1>
 
-<p class="lede">A small open-source framework for running parallel AI sub-agents with a built-in audit trail, multi-layer fault tolerance, and a starter library of failure-pattern detectors. Free gift. MIT-licensed. No telemetry, no upsell.</p>
+<p class="lede">A small framework for running parallel AI sub-agents with a built-in audit trail, multi-layer fault tolerance, and a starter library of failure-pattern detectors. No telemetry, no upsell, no account required.</p>
 
 <p>If you use GitHub Copilot or any LLM API, the workflow gives you a measured <strong>8× more useful work per credit at the safe default</strong>, with cryptographic receipts you verify yourself in 5 minutes. Don't trust me — argue with SHA-256.</p>
+
+<div class="cta" style="border-left: 4px solid var(--accent); border-top: 1px solid var(--rule); border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule);">
+<strong>Try it in 5 minutes:</strong>
+<pre style="margin: 0.6em 0 0; background: var(--bg); border: 1px solid var(--rule);"><code>git clone https://github.com/obsidian-spider-org/obsidian-spider-skeleton
+cd obsidian-spider-skeleton
+python3 examples/hello_pdca.py
+# → loop ticks, both checklists pass, chain.jsonl appends two HMAC-chained receipts</code></pre>
+<p style="margin: 0.6em 0 0; font-size: 0.94em;">Or skim the receipts and decide later. <a href="https://github.com/obsidian-spider-org/obsidian-spider-skeleton">repo</a> · <a href="/alignment">about &amp; verifiability</a> · <a href="/receipts">cryptographic receipts</a></p>
+</div>
 
 <div class="cta">
 <strong>Why this exists:</strong> AI agents trained with reinforcement learning from human feedback (RLHF) routinely drift into specification-gaming — they appear helpful while doing the wrong thing. Real production incidents (PocketOS lost 3 months of customer data; the developer of this framework lost 1 month of work to git corruption from agent over-confidence) make defense-in-depth non-optional past toy problems. This framework wraps PDCA loops + heterogeneous Byzantine fault-tolerant voting + Toyota-style stop-the-line + cryptographic audit trail around every cycle.
