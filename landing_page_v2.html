@@ -97,7 +97,7 @@ footer { margin-top: 4em; font-size: 0.85em; color: #666; border-top: 1px solid 
 
 <h3>Section 1 — Credit multiplier (sub-agents per Copilot credit; model-class agnostic)</h3>
 
-<p style="background:#f0f4f8;padding:0.8em;border-left:3px solid #888;border-radius:3px;"><strong>The workflow can break. Stability depends on the work being done.</strong> This pattern is heavily rate-limited at the provider edge AND has many failure modes (provider 5xx, partial responses, malformed tool-calls, sub-agent confabulation). The author's setup runs stably at 8×8 daily <em>because</em> the framework wires in <strong>multi-layer fault tolerance</strong> (the four primitives below). Without those layers you'll see breakage. With them, the author hasn't lost a workday yet.</p>
+<p style="background:#f0f4f8;padding:0.8em;border-left:3px solid #888;border-radius:3px;"><strong>The workflow can break.</strong> This pattern is heavily rate-limited at the provider edge AND has many failure modes (provider 5xx, partial responses, malformed tool-calls, sub-agent confabulation). The author's workflows are stable in daily use, but <strong>even the author's workflows get buggy and weird sometimes</strong> — the framework's <strong>multi-layer fault tolerance</strong> catches and contains it; it doesn't prevent every failure. We don't overpromise. The receipts in this repo are what they are; verify them, run your own, draw your own conclusions.</p>
 
 <p style="background:#fef9e7;padding:0.8em;border-left:3px solid #c9a227;border-radius:3px;"><strong>Your workflow will differ.</strong> Start at 2×4 and find your own stability point. Here's what the author has tested as the max — you can push it but be prepared to hit rate limits often.</p>
 

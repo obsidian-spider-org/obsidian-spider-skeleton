@@ -57,7 +57,7 @@ If you use GitHub Copilot, Microsoft announced billing changes effective approxi
 
 ### Section 1 — Credit multiplier (sub-agents per Copilot credit; model-class agnostic)
 
-> **The workflow can break. Stability depends on the work being done.** This pattern is heavily rate-limited at the provider edge AND has many failure modes (provider 5xx, partial responses, malformed tool-calls, sub-agent confabulation, etc.). The author's setup runs stably at 8×8 daily *because* the framework wires in **multi-layer fault tolerance** (the four primitives in the next section). Without those layers, you'll see breakage. With them, the author hasn't lost a workday yet.
+> **The workflow can break.** This pattern is heavily rate-limited at the provider edge AND has many failure modes (provider 5xx, partial responses, malformed tool-calls, sub-agent confabulation, etc.). The author's workflows are stable in daily use, but **even the author's workflows get buggy and weird sometimes** — the framework's multi-layer fault tolerance catches and contains it; it doesn't prevent every failure. We don't overpromise. The receipts in this repo are what they are; verify them, run your own, draw your own conclusions.
 >
 > **Your workflow will differ.** Start at 2×4 and find your own stability point. Here's what the author has tested as the max — you can push it but be prepared to hit rate limits often.
 
