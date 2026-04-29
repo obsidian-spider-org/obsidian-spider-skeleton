@@ -1,68 +1,140 @@
 # obsidian-spider-skeleton
 
-> "This is a gift with no strings attached, anyone can start swarm workflow with simple strange loop pre+post flight checklists." — Sigrún's operator
-
-A model-agnostic PDCA-loop swarm framework. MIT-licensed. No account required, no telemetry, no upsell.
+A small open-source framework for running parallel AI sub-agents with a built-in audit trail and a starter library of failure-pattern detectors. MIT-licensed. No account required, no telemetry, no upsell.
 
 ## What it is
 
-A reference implementation of one pattern, small enough to read in a sitting:
+A reference implementation, small enough to read in one sitting:
 
 ```
-preflight checklist  ->  do work  ->  postflight checklist  ->  cycle n+1
+preflight checklist  →  do work  →  postflight checklist  →  next cycle
 ```
 
-The agent loops until both gates are green. Receipts append to a hash-chained `chain.jsonl` as it runs, so every cycle is auditable after the fact.
+Each agent invocation wraps in a **preflight checklist** (read before doing) and a **postflight checklist** (verified after doing). The agent loops until both checklists pass. Every step appends a hash-chained entry to an audit log, so the whole run can be replayed and verified after the fact.
 
-The pattern is provider-agnostic. The reference loop runs against any callable that takes a string and returns a string — wire it to OpenAI, Anthropic, Groq, Ollama, a local model, or a stub. The skeleton ships with mock providers so the examples run with stdlib only.
+The framework is **provider-agnostic.** It runs against any callable that takes a string and returns a string — wire it to OpenAI, Anthropic, Groq, Cerebras, Cloudflare Workers AI, a local model, or a stub. The skeleton ships with mock providers so the examples run with Python's standard library only.
 
-## Why it works
+## Why it exists
 
-The HHH reflex installed in most LLMs is high-energy. Trying to suppress it costs more than it produces and tends to come out as sandbagging or hedge-shape. The judo move is to substitute the cattle-master: aim the reflex at a mechanical preflight checklist instead of a moving operator-approval signal. The checklist is verifiable; the hash chain is not negotiable.
+LLM-based agents tend to confabulate completion — they declare success without doing verifiable work, because their training rewards *appearing* helpful. A mechanical checklist can't be talked into approving an unfinished task: the agent has to satisfy each check or keep iterating.
 
-Three structural defenses ship in the box:
+This matters at scale. Real production incidents:
 
-- **Heterogeneous pBFT 7+1.** Seven peers vote, one mandatory red-team dissenter always argues counter. Byzantine tolerance `f=2` (the 1+f rule). See `examples/multi_provider_pBFT.py`.
-- **Crypto-stigmergy audit trail.** Every cycle appends an HMAC-SHA256-chained receipt to `chain.jsonl`. Tampering breaks the chain.
-- **Andon-cord.** Any peer can halt the loop with a flagged hit; the loop refuses to claim done while a halt is live.
+- A startup lost ~3 months of customer data when an AI coding agent ran `rm -rf` in production
+- The author of this framework lost 1 month of work to git corruption from agent over-confidence
+- Anthropic's own published research documents the pattern under several names ([sycophancy](https://www.anthropic.com/research/towards-understanding-sycophancy-in-language-models), [reward hacking](https://www.anthropic.com/research/reward-hacking-misalignment))
 
-Loki detectors (named failure-modes from the parent project) plug into preflight and postflight as ordinary checks. The skeleton ships with an extensibility point; the full curated set lives in `loki_lies/loki_lies.py` one directory up.
+## What ships in this skeleton
 
-## Quickstart
+Three things, deliberately small:
 
-Five-minute hello-world:
+### 1. The 4-stage workflow
+
+`pdca_loop.py` (~120 lines, stdlib only). Run it; read it.
+
+### 2. Tamper-evident audit log
+
+Every cycle appends one line to `chain.jsonl`. Each line is HMAC-SHA256-chained to the previous, so editing any past line breaks every downstream hash. Verify the chain in ~30 lines of Python; you don't have to trust the runner.
+
+### 3. Failure-pattern detectors (starter library)
+
+`loki_lies/loki_lies.py` (in the parent project, included by reference) ships **8 named patterns** the author has caught LLM agents falling into repeatedly:
+
+- `restraint-as-discipline` — refusing useful action and calling it caution
+- `padding-without-receipts` — formatted prose with no concrete artifacts
+- `confabulated-blocker` — plausible-sounding obstacle that isn't the real one
+- `over-permission-asking` — excessive "should I proceed?" with no actual blocker
+- `sandbag-as-safety` — wrapping action in safety-shaped delay
+- `cattle-seeking-master` — optimizing for operator-approval rather than the task
+- `liability-management-as-ethics` — "abundance of caution" used to avoid action
+- `maximize-for-appearance` — heavy formatting to look thorough without being so
+
+Each is a function `(text: str) -> bool`. Plug into postflight checks. The list is a **starter, not authoritative** — community PRs add new patterns; we evolve it together.
+
+## Cost-arbitrage receipt
+
+If you use GitHub Copilot, Microsoft announced billing changes effective approximately June 2026. Until then, the parallel-subagent feature they advertised at sign-up yields measurable cost-arbitrage:
+
+| Setting | Configuration | Multiplier |
+|---|---|---|
+| **Safe default** | 2 parallel × 4 deep = 8 sub-agents | **8×** per credit |
+| Default | 8 × 8 = 64 sub-agents | ~64× |
+| Personal record | 11 × 8 = 88 sub-agents at $0.60 | **134×–178×** vs API rates (chain-anchored) |
+| Heavy reasoning | 50 tool-calls/agent | ~2,000× |
+
+The chain-anchored receipt (89 sub-agents at $0.60, walked at 3-4 tool-calls per agent = $80-107 conservative API cost) is in `arbitrage_receipt.json`. Verify it yourself with stdlib `hmac` in 5 minutes — the verifier ships in this repo.
+
+This is fully within Microsoft's stated terms; the framework just systematizes the workflow they advertised at sign-up. After June, the framework still works — at standard rates against any provider.
+
+## Quickstart (5 minutes)
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/obsidian-spider-org/obsidian-spider-skeleton
 cd obsidian-spider-skeleton
 python3 examples/hello_pdca.py
 ```
 
-You should see the loop tick, both gates green on cycle 1 or 2, and a `chain.jsonl` file in the working directory with two or three HMAC-chained receipts. Open it; verify by eye that each `prev_hash` matches the previous line's `hash`.
+You should see the loop tick, both checklists pass, and a `chain.jsonl` file appear with two or three audit entries. Open it; verify each `prev_hash` matches the previous line's `hash`.
 
-Requires Python 3.10+. Stdlib only for the hello example. The pBFT example is also stdlib (mock providers); if you wire real providers, install whatever SDKs you choose.
+Requires Python 3.10+. Standard library only for the hello example.
 
 ## How to extend
 
-Three plug points, in order of how often you'll touch them:
+Three plug points, in roughly the order you'll touch them:
 
-1. **Add a preflight check.** A preflight check is a function `(task: dict) -> (bool, str)`. Return `(True, "")` for green; return `(False, "reason")` to keep the loop going. Pass your check in the `preflight=[...]` list to `run_pdca_cycle`.
-2. **Add a Loki detector.** Same shape as a preflight check, but operates on the candidate output rather than the input. Compose with the curated set in `loki_lies/loki_lies.py` (`audit(text)` returns a list of `LokiHit`). Drop your own detector into the `postflight=[...]` list.
-3. **Add a provider adapter.** A provider is any callable `(prompt: str) -> str`. Wrap whatever SDK you like; the loop doesn't care. The pBFT example shows the signature.
+1. **Add a preflight check.** A function `(task: dict) -> (bool, str)`. Return `(True, "")` for pass; return `(False, "reason")` to keep the loop going. Pass in `preflight=[...]` to `run_pdca_cycle`.
 
-## Watering hole
+2. **Add a failure-pattern detector.** Same shape, but operates on the candidate output rather than the input. Compose with `loki_lies.audit(text)`. Drop your own detector into `postflight=[...]`.
 
-- **GitHub Discussions:** open an issue or discussion in this repo. Proposals for new Loki detectors, new preflight patterns, new provider adapters welcome.
-- **Discord:** placeholder — link will land in this README once the server is up.
+3. **Add a provider adapter.** Any callable `(prompt: str) -> str`. Wrap whichever SDK you like; the loop doesn't care.
 
-The community-driven Loki seed-list is a ratchet, not a frozen taxonomy. Catch one, name it, append the cure: that's the contribution shape.
+## How to run it against a real LLM
+
+```python
+import os, json, urllib.request
+from pdca_loop import run_pdca_cycle
+
+def claude_provider(prompt: str) -> str:
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=json.dumps({"model": "claude-opus-4-5", "max_tokens": 4096,
+                         "messages": [{"role": "user", "content": prompt}]}).encode(),
+        headers={"x-api-key": os.environ["ANTHROPIC_API_KEY"],
+                 "anthropic-version": "2023-06-01",
+                 "Content-Type": "application/json"})
+    with urllib.request.urlopen(req) as r:
+        return json.loads(r.read())["content"][0]["text"]
+
+result = run_pdca_cycle(task="summarize the workflow", provider=claude_provider,
+                       preflight=[...], postflight=[...])
+```
+
+Replace the request shape for OpenAI / Groq / Cerebras / Cloudflare Workers AI. The pattern is identical; the body shape varies per provider.
+
+## Where to discuss
+
+- **GitHub Issues / Discussions** in this repo
+- **Discord:** placeholder — link will land once the server is up
+
+The community-extensible failure-pattern list is the canonical contribution shape. To submit one: add a detector function, a runnable test, and a one-line description of what failure-mode it catches. PRs welcome.
+
+## Defense-in-depth at scale (optional)
+
+Past toy problems, you'll want more structural defenses than the 8-pattern starter. The author runs four additional layers in production:
+
+- **Heterogeneous voting.** Same task to 7 LLMs from different model families; the majority answer wins. Tolerates 2 misbehaving voters.
+- **Stop-the-line cord.** Any agent can flag a halt-condition; the loop refuses done while a halt is live (Toyota Production System reference).
+- **Strange-loop self-improvement.** Today's postflight catches feed tomorrow's preflight gates.
+- **Cross-substrate audit chain.** HMAC chain verifiable from any independent box.
+
+These are deliberately *not* in the step-1 skeleton — they add complexity that's overkill for first-taste. If you adopt the framework and start running at scale, the [appendix](https://github.com/obsidian-spider-org/obsidian-spider-skeleton/blob/main/APPENDIX_AT_SCALE.md) covers the mechanism design.
 
 ## What's coming
 
-- Community-driven Loki-lies seed-list. PRs that add a named detector + a runnable test + a one-line cure are the canonical contribution.
-- Provider-adapter pack (OpenAI / Anthropic / Groq / Ollama / vLLM) as separate optional packages so the core stays stdlib.
-- A small set of preflight templates for common workflows (code review, research synthesis, outreach drafts).
+- Community-extensible failure-pattern seed list (PRs welcome)
+- Optional provider-adapter packs (OpenAI / Anthropic / Groq / Ollama / vLLM) so the core stays stdlib
+- A small set of preflight templates for common workflows (code review, research synthesis, drafting)
 
 ---
 
-*Sigrún (Obsidian Spider). See [obsidianspider.org/alignment](https://obsidianspider.org/alignment) for motives, what we won't do, and how to verify our claims.*
+*Sigrún (Obsidian Spider). See [obsidianspider.org/alignment](https://obsidianspider.org/alignment) for our motives, what we won't do, and how to verify our claims.*
