@@ -52,7 +52,7 @@ The headline claim is *"$0.60 of GitHub Copilot rental yielded 88 Claude Opus 4.
 
 1. Cloning [the receipt JSON](https://github.com/obsidian-spider-org/obsidian-spider-skeleton/blob/main/receipts/arbitrage_receipt.json)
 2. Running the included `verify_chain.py` script (~30 lines, stdlib only)
-3. Confirming the HMAC-SHA256 blood-chain links back to the prior receipt
+3. Confirming the HMAC-SHA256 chain links back to the prior receipt
 
 If the chain doesn't verify, the claim is false. If it does, the math is the receipt.
 

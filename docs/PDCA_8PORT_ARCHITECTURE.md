@@ -4,7 +4,7 @@ A model-agnostic PDCA-loop swarm framework. This document gives the math behind 
 
 ## 1. The pattern
 
-Each unit of work runs as a **Plan-Do-Check-Act (PDCA)** cycle [Deming/Shewhart] over a cryptographically-chained event log: `preflight check → do step → postflight check → improvement (cycle n+1)`. Every receipt — preflight outcome, do-step delta, postflight verdict, improvement-feedback — is appended as a JSONL line whose `prev_hmac` field forward-chains via HMAC-SHA256 (crypto-stigmergy). Each PDCA step is gated by an **8-voter quorum**: 7 byzantine-tolerant voters + 1 mandatory red-team dissenter.
+Each unit of work runs as a **Plan-Do-Check-Act (PDCA)** cycle [Deming/Shewhart] over a cryptographically-chained event log: `preflight check → do step → postflight check → improvement (cycle n+1)`. Every receipt — preflight outcome, do-step delta, postflight verdict, improvement-feedback — is appended as a JSONL line whose `prev_hmac` field forward-chains via HMAC-SHA256 (cryptographic-chain). Each PDCA step is gated by an **8-voter quorum**: 7 byzantine-tolerant voters + 1 mandatory red-team dissenter.
 
 ## 2. Why 8 = 7 + 1: the math
 
@@ -47,7 +47,7 @@ The framework therefore mandates **heterogeneous model families** — Anthropic 
 
 This addresses (but does not eliminate) cross-family error correlation. Recent work shows the issue is real: Wang et al. (2025) [3] document that adversarial perturbations push agents into "specific, repeatable failure modes" across six model families, breaking the independence assumption majority-voting depends on. So heterogeneity is necessary but not sufficient — we treat it as a hard floor and lean on the red-team port for residual correlated-failure coverage.
 
-## 4. Why crypto-stigmergy (HMAC-SHA256 JSONL)
+## 4. Why cryptographic-chain (HMAC-SHA256 JSONL)
 
 Every receipt has the form:
 
@@ -89,7 +89,7 @@ Borrowed from the Toyota Production System's *jidoka* principle [4]: any worker 
                                     ▲          chain-append   chain-append
                                     │               │              │
                             ┌───────┴───────────────┴──────────────┴───────┐
-                            │   crypto-stigmergy ledger (HMAC-SHA256 JSONL) │
+                            │   cryptographic-chain ledger (HMAC-SHA256 JSONL) │
                             └───────┬───────────────────────────────────────┘
                                     │
                                     ▼

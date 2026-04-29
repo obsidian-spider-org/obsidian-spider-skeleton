@@ -187,3 +187,41 @@ footer {
   font-size: 0.88em;
   color: var(--fg-muted);
 }
+
+details.polyglot {
+  margin: 2.5em 0 1.5em;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--bg-card);
+}
+details.polyglot summary {
+  padding: 0.9em 1.2em;
+  cursor: pointer;
+  font-size: 1.05em;
+  list-style: none;
+  border-radius: 6px;
+}
+details.polyglot summary::-webkit-details-marker { display: none; }
+details.polyglot summary::before {
+  content: "▸ ";
+  display: inline-block;
+  width: 1em;
+  color: var(--accent);
+  transition: transform 0.15s ease;
+}
+details.polyglot[open] summary::before {
+  content: "▾ ";
+}
+details.polyglot summary:hover {
+  background: var(--accent-soft);
+}
+details.polyglot[open] summary {
+  border-bottom: 1px solid var(--rule);
+  border-radius: 6px 6px 0 0;
+}
+details.polyglot > .lang-block {
+  margin: 0.6em 1em;
+  border-radius: 4px;
+}
+details.polyglot > .lang-block:first-of-type { margin-top: 1em; }
+details.polyglot > .lang-block:last-of-type { margin-bottom: 1em; }

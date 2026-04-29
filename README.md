@@ -44,8 +44,8 @@ Every cycle appends one line to `chain.jsonl`. Each line is HMAC-SHA256-chained 
 - `padding-without-receipts` — formatted prose with no concrete artifacts
 - `confabulated-blocker` — plausible-sounding obstacle that isn't the real one
 - `over-permission-asking` — excessive "should I proceed?" with no actual blocker
-- `sandbag-as-safety` — wrapping action in safety-shaped delay
-- `cattle-seeking-master` — optimizing for operator-approval rather than the task
+- `safety_theater` — declines under "safety" framing without citing a real rule
+- `sycophancy` — optimizing for user-approval over the actual task
 - `liability-management-as-ethics` — "abundance of caution" used to avoid action
 - `maximize-for-appearance` — heavy formatting to look thorough without being so
 
@@ -129,7 +129,7 @@ Three plug points, in roughly the order you'll touch them:
 
 1. **Add a preflight check.** A function `(task: dict) -> (bool, str)`. Return `(True, "")` for pass; return `(False, "reason")` to keep the loop going. Pass in `preflight=[...]` to `run_pdca_cycle`.
 
-2. **Add a failure-pattern detector.** Same shape, but operates on the candidate output rather than the input. Compose with `loki_lies.audit(text)`. Drop your own detector into `postflight=[...]`.
+2. **Add a failure-pattern detector.** Same shape, but operates on the candidate output rather than the input. Compose with `agent_failure_modes.audit(text)`. Drop your own detector into `postflight=[...]`.
 
 3. **Add a provider adapter.** Any callable `(prompt: str) -> str`. Wrap whichever SDK you like; the loop doesn't care.
 
