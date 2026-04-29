@@ -57,16 +57,18 @@ If you use GitHub Copilot, Microsoft announced billing changes effective approxi
 
 ### Section 1 — Credit multiplier (sub-agents per Copilot credit; model-class agnostic)
 
-> **The workflow doesn't break. Rate limits do.** This pattern is heavily rate-limited at the provider edge — your subscription tier dictates how high you can run. Tune `parallel × depth` to whatever your tier supports; the framework is the same shape.
+> **The workflow can break. Stability depends on the work being done.** This pattern is heavily rate-limited at the provider edge AND has many failure modes (provider 5xx, partial responses, malformed tool-calls, sub-agent confabulation, etc.). The author's setup runs stably at 8×8 daily *because* the framework wires in **multi-layer fault tolerance** (the four primitives in the next section). Without those layers, you'll see breakage. With them, the author hasn't lost a workday yet.
+>
+> **Your workflow will differ.** Start at 2×4 and find your own stability point. Here's what the author has tested as the max — you can push it but be prepared to hit rate limits often.
 
 | Setting | Configuration | Sub-agents per credit | Author's tested-stable status (April 2026) |
 |---|---|---|---|
-| **Safe default** | 2 parallel × 4 deep | **8 sub-agents** | recommended start; minimal rate-limit pressure |
-| **High-throughput working** | **8 × 8** | **64 sub-agents** | **author's daily working config; holds stable in testing** |
+| **Recommended start** | 2 parallel × 4 deep | **8 sub-agents** | minimal rate-limit pressure; verify the loop runs; find your stability point from here |
+| **Author's daily working config** | **8 × 8** | **64 sub-agents** | **stable in author's testing with multi-layer fault tolerance enabled — your mileage varies with the work** |
 | Max tested — Sonnet class | 12 × 8 | 96 sub-agents | sustained ~6 hours with periodic rate-limit pauses |
 | **Max tested — Opus 4.7 (chain-anchored)** | **11 × 8** | **88 sub-agents** at $0.60 | **single-shot record; burns the entire weekly quota in one run** — author does not run this often |
 
-The credit multiplier is just `parallel × depth` and works for any model class. **Most production workflows should be 8×8** — that's the configuration the author runs daily. 11×8 Opus is the chain-anchored receipt, not the daily setting. Verifiable in 1 hour with your own subscription at 2×4.
+The credit multiplier is just `parallel × depth` and works for any model class. **8×8 is the author's stable daily setting; it is not a guaranteed stable setting for you.** 11×8 Opus is the chain-anchored receipt, not the daily setting. Start at 2×4, walk up.
 
 ### Section 2 — API-cost arbitrage (vs direct Anthropic API; **model-class specific**)
 

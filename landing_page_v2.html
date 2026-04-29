@@ -97,17 +97,19 @@ footer { margin-top: 4em; font-size: 0.85em; color: #666; border-top: 1px solid 
 
 <h3>Section 1 — Credit multiplier (sub-agents per Copilot credit; model-class agnostic)</h3>
 
-<p style="background:#f0f4f8;padding:0.8em;border-left:3px solid #888;border-radius:3px;"><strong>The workflow doesn't break. Rate limits do.</strong> This pattern is heavily rate-limited at the provider edge — your subscription tier dictates how high you can run. Tune <code>parallel × depth</code> to whatever your tier supports; the framework is the same shape.</p>
+<p style="background:#f0f4f8;padding:0.8em;border-left:3px solid #888;border-radius:3px;"><strong>The workflow can break. Stability depends on the work being done.</strong> This pattern is heavily rate-limited at the provider edge AND has many failure modes (provider 5xx, partial responses, malformed tool-calls, sub-agent confabulation). The author's setup runs stably at 8×8 daily <em>because</em> the framework wires in <strong>multi-layer fault tolerance</strong> (the four primitives below). Without those layers you'll see breakage. With them, the author hasn't lost a workday yet.</p>
+
+<p style="background:#fef9e7;padding:0.8em;border-left:3px solid #c9a227;border-radius:3px;"><strong>Your workflow will differ.</strong> Start at 2×4 and find your own stability point. Here's what the author has tested as the max — you can push it but be prepared to hit rate limits often.</p>
 
 <table>
 <tr><th>Setting</th><th>Configuration</th><th>Sub-agents per credit</th><th>Author's tested-stable status (April 2026)</th></tr>
-<tr><td><strong>Safe default</strong></td><td>2 parallel × 4 deep</td><td><strong>8 sub-agents</strong></td><td>recommended start; minimal rate-limit pressure</td></tr>
-<tr><td><strong>High-throughput working</strong></td><td><strong>8 × 8</strong></td><td><strong>64 sub-agents</strong></td><td><strong>author's daily working config; holds stable</strong></td></tr>
+<tr><td><strong>Recommended start</strong></td><td>2 parallel × 4 deep</td><td><strong>8 sub-agents</strong></td><td>minimal rate-limit pressure; verify the loop runs; find your stability from here</td></tr>
+<tr><td><strong>Author's daily working config</strong></td><td><strong>8 × 8</strong></td><td><strong>64 sub-agents</strong></td><td><strong>stable in author's testing with multi-layer fault tolerance enabled — your mileage varies with the work</strong></td></tr>
 <tr><td>Max tested — Sonnet class</td><td>12 × 8</td><td>96 sub-agents</td><td>sustained ~6 hours with periodic rate-limit pauses</td></tr>
-<tr><td><strong>Max tested — Opus 4.7 (chain-anchored)</strong></td><td><strong>11 × 8</strong></td><td><strong>88 sub-agents</strong> at $0.60</td><td><strong>single-shot record; burns weekly quota in one run</strong> — author doesn't run this often</td></tr>
+<tr><td><strong>Max tested — Opus 4.7 (chain-anchored)</strong></td><td><strong>11 × 8</strong></td><td><strong>88 sub-agents</strong> at $0.60</td><td><strong>single-shot record; burns the entire weekly quota in one run</strong> — author doesn't run this often</td></tr>
 </table>
 
-<p>The credit multiplier is just <code>parallel × depth</code>; works for any model class. <strong>Most production workflows should be 8×8</strong> — that's the configuration the author runs daily. 11×8 Opus is the chain-anchored receipt, not the daily setting. Verifiable in 1 hour with your own subscription at 2×4.</p>
+<p>The credit multiplier is just <code>parallel × depth</code>; works for any model class. <strong>8×8 is the author's stable daily setting — not a guaranteed stable setting for you.</strong> 11×8 Opus is the chain-anchored receipt, not the daily setting. Start at 2×4, walk up.</p>
 
 <h3>Section 2 — API-cost arbitrage (vs direct Anthropic API; <strong>model-class specific</strong>)</h3>
 
