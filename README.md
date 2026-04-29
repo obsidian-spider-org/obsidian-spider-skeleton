@@ -38,7 +38,7 @@ Every cycle appends one line to `chain.jsonl`. Each line is HMAC-SHA256-chained 
 
 ### 3. Failure-pattern detectors (starter library)
 
-`loki_lies/loki_lies.py` (in the parent project, included by reference) ships **8 named patterns** the author has caught LLM agents falling into repeatedly:
+`agent_failure_modes/agent_failure_modes.py` (in the parent project, included by reference) ships **8 named patterns** the author has caught LLM agents falling into repeatedly:
 
 - `restraint-as-discipline` — refusing useful action and calling it caution
 - `padding-without-receipts` — formatted prose with no concrete artifacts
